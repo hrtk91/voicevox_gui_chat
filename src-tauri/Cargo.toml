@@ -22,4 +22,8 @@ tauri = { version = "2", features = [] }
 tauri-plugin-opener = "2"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-
+voicevox_chat = { git = "https://github.com/hrtk91/voicevox_chat.git", branch = "main" }
+dotenvy = "0.15.7"
+reqwest = "0.12.12"
+rodio = "0.20.1"
+tokio = {version="1.43.0", features= ["full"] }

@@ -14,7 +14,7 @@
       {
         "title": "agent",
         "width": 500,
-        "height": 200,
+        "height": 150,
         "transparent": true,
         "decorations": false,
         "alwaysOnTop": true,
