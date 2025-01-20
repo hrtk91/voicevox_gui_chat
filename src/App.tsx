@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./tailwind.css";
 import { invoke } from "@tauri-apps/api/core";
 import { XMarkIcon } from "@heroicons/react/24/outline";
+import { Button } from "./components/ui/button";
 
 function App() {
   const [value, setValue] = useState("");
@@ -15,6 +16,18 @@ function App() {
     });
     setReply(reply);
   };
+
+  const onContextMenu = (x: number, y: number) => {
+    alert(`x: ${x}, y: ${y}`);
+  };
+
+  useEffect(() => {
+    window.addEventListener("contextmenu", (ev) => {
+      ev.preventDefault();
+      onContextMenu(ev.clientX, ev.clientY);
+    });
+  }, []);
+
   return (
     <>
       <main className="h-dvh w-dvw flex flex-col bg-black bg-opacity-50">
@@ -61,15 +74,13 @@ function App() {
               }
             }}
           />
-          <button
-            type="button"
-            className="text-white px-2 border rounded"
+          <Button
             onClick={async () => {
               await handleSendMessage();
             }}
           >
             送信
-          </button>
+          </Button>
         </form>
       </main>
     </>
