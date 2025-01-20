@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "./tailwind.css";
 import { invoke } from "@tauri-apps/api/core";
+import { XMarkIcon } from "@heroicons/react/24/outline";
 
 function App() {
   const [value, setValue] = useState("");
@@ -34,7 +35,7 @@ function App() {
                 invoke("exit");
               }}
             >
-              X
+              <XMarkIcon className="size-5" />
             </button>
             <div
               className="absolute left-0 right-0 h-full w-full z-10"
