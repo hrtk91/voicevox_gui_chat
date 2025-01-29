@@ -63,17 +63,20 @@ function App() {
           className="flex gap-2 px-4 py-2 shrink-0"
           onSubmit={(ev) => ev.preventDefault()}
         >
-          <input
-            type="text"
+          <textarea
             className="grow p-2 outline-none"
+            rows={2}
             onChange={(ev) => {
               setValue(ev.target.value);
             }}
             value={value}
             onKeyUp={async (ev) => {
               // Ctrl + Enterで送信
-              if (ev.ctrlKey && ev.key === "Enter") {
-                await handleSendMessage();
+              if (ev.key === "Enter") {
+                if (ev.ctrlKey) {
+                  await handleSendMessage();
+                  return;
+                }
               }
             }}
           />
