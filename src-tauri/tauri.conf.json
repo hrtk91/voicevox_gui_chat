@@ -14,11 +14,12 @@
       {
         "title": "agent",
         "width": 500,
-        "height": 150,
+        "height": 300,
         "transparent": true,
         "decorations": false,
         "alwaysOnTop": true,
         "resizable": false
+        // "shadow": false
       }
     ],
     "security": {
