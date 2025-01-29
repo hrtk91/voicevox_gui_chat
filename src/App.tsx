@@ -1,8 +1,14 @@
-import { useEffect, useState } from "react";
-import "./tailwind.css";
-import { invoke } from "@tauri-apps/api/core";
 import { XMarkIcon } from "@heroicons/react/24/outline";
+import { invoke } from "@tauri-apps/api/core";
+import { useState } from "react";
 import { Button } from "./components/ui/button";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger
+} from "./components/ui/context-menu";
+import "./tailwind.css";
 
 function App() {
   const [value, setValue] = useState("");
@@ -17,45 +23,42 @@ function App() {
     setReply(reply);
   };
 
-  const onContextMenu = (x: number, y: number) => {
-    alert(`x: ${x}, y: ${y}`);
-  };
-
-  useEffect(() => {
-    window.addEventListener("contextmenu", (ev) => {
-      ev.preventDefault();
-      onContextMenu(ev.clientX, ev.clientY);
-    });
-  }, []);
-
   return (
     <>
-      <main className="h-dvh w-dvw flex flex-col bg-black bg-opacity-50">
-        <div className="relative w-full grow overflow-y-hidden cursor-grab active:cursor-grabbing">
-          <div className="flex items-center gap-2 select-none h-full w-full p-2">
-            <img
-              src="/public/zunda_smile_001.png"
-              alt="zunda"
-              className="max-w-24"
-            />
-            <div className="overflow-y-auto h-full grow z-20 cursor-auto">
-              <p className="text-base text-white">{reply}</p>
+      <main className="h-dvh w-dvw flex flex-col bg-black bg-opacity-50 backdrop-blur">
+        <ContextMenu>
+          <ContextMenuTrigger className="relative overflow-hidden w-full grow cursor-grab active:cursor-grabbing">
+            <div className="flex items-center gap-2 select-none h-full w-full p-2">
+              <img
+                src="/public/zunda_smile_001.png"
+                alt="zunda"
+                className="max-w-24"
+              />
+              <div className="overflow-y-auto h-full grow z-20 cursor-auto ">
+                <p className="text-base text-white">{reply}</p>
+              </div>
+              <button
+                className="text-white px-2 self-start z-20"
+                type="button"
+                onClick={() => {
+                  invoke("exit");
+                }}
+              >
+                <XMarkIcon className="size-5" />
+              </button>
+              <div
+                className="absolute left-0 right-0 h-full w-full z-10"
+                data-tauri-drag-region
+              />
             </div>
-            <button
-              className="text-white px-2 self-start z-20"
-              type="button"
-              onClick={() => {
-                invoke("exit");
-              }}
-            >
-              <XMarkIcon className="size-5" />
-            </button>
-            <div
-              className="absolute left-0 right-0 h-full w-full z-10"
-              data-tauri-drag-region
-            />
-          </div>
-        </div>
+          </ContextMenuTrigger>
+          <ContextMenuContent>
+            <ContextMenuItem>Profile</ContextMenuItem>
+            <ContextMenuItem>Billing</ContextMenuItem>
+            <ContextMenuItem>Team</ContextMenuItem>
+            <ContextMenuItem>Subscription</ContextMenuItem>
+          </ContextMenuContent>
+        </ContextMenu>
         <form
           className="flex gap-2 px-4 py-2 shrink-0"
           onSubmit={(ev) => ev.preventDefault()}
