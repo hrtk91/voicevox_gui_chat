@@ -1,6 +1,12 @@
-import { XMarkIcon } from "@heroicons/react/24/outline";
+import {
+  XMarkIcon,
+  PlayIcon,
+  PauseIcon,
+  StopIcon
+} from "@heroicons/react/24/outline";
 import { invoke } from "@tauri-apps/api/core";
-import { useState } from "react";
+import { listen } from "@tauri-apps/api/event";
+import { useState, useEffect } from "react";
 import { Button } from "./components/ui/button";
 import {
   ContextMenu,
@@ -13,6 +19,17 @@ import "./tailwind.css";
 function App() {
   const [value, setValue] = useState("");
   const [reply, setReply] = useState("");
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  useEffect(() => {
+    const unlisten = listen("audio-playback-completed", () => {
+      setIsPlaying(false);
+    });
+
+    return () => {
+      unlisten.then((f) => f()).catch(console.error);
+    };
+  }, []);
 
   const handleSendMessage = async () => {
     if (!value) return;
@@ -21,6 +38,7 @@ function App() {
       value
     });
     setReply(reply);
+    setIsPlaying(true);
   };
 
   return (
@@ -28,14 +46,61 @@ function App() {
       <main className="h-dvh w-dvw flex flex-col bg-black bg-opacity-50 backdrop-blur">
         <ContextMenu>
           <ContextMenuTrigger className="relative overflow-hidden w-full grow cursor-grab active:cursor-grabbing">
-            <div className="flex items-center gap-2 select-none h-full w-full p-2">
+            <div className="flex items-center gap-2 select-none h-full w-full px-2 pt-2">
               <img
                 src="/public/zunda_smile_001.png"
                 alt="zunda"
                 className="max-w-24"
               />
-              <div className="overflow-y-auto h-full grow z-20 cursor-auto ">
-                <p className="text-base text-white">{reply}</p>
+              <div className="h-full flex flex-col z-20 grow cursor-auto">
+                <div className="overflow-y-auto">
+                  <p className="text-base text-white">{reply}</p>
+                </div>
+                {reply && (
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="hover:bg-transparent"
+                      onClick={async () => {
+                        try {
+                          if (isPlaying) {
+                            await invoke("pause_audio");
+                            setIsPlaying(false);
+                          } else {
+                            await invoke("resume_audio");
+                            setIsPlaying(true);
+                          }
+                        } catch (error) {
+                          console.error("Audio control error:", error);
+                        }
+                      }}
+                    >
+                      {isPlaying ? (
+                        <PauseIcon className="size-10 text-gray-300" />
+                      ) : (
+                        <PlayIcon className="size-7 text-gray-300" />
+                      )}
+                    </Button>
+                    {isPlaying && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="hover:bg-transparent"
+                        onClick={async () => {
+                          try {
+                            await invoke("stop_audio");
+                            setIsPlaying(false);
+                          } catch (error) {
+                            console.error("Audio stop error:", error);
+                          }
+                        }}
+                      >
+                        <StopIcon className="size-5 text-red-500" />
+                      </Button>
+                    )}
+                  </div>
+                )}
               </div>
               <button
                 className="text-white px-2 self-start z-20"
@@ -60,7 +125,7 @@ function App() {
           </ContextMenuContent>
         </ContextMenu>
         <form
-          className="flex gap-2 px-4 py-2 shrink-0"
+          className="flex gap-2 px-4 shrink-0"
           onSubmit={(ev) => ev.preventDefault()}
         >
           <textarea

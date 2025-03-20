@@ -4879,7 +4879,7 @@ checksum = "0b928f33d975fc6ad9f86c8f283853ad26bdd5b10b7f1542aa2fa15e2289105a"
 [[package]]
 name = "voicevox_chat"
 version = "0.1.0"
-source = "git+https://github.com/hrtk91/voicevox_chat.git?branch=main#df949f3f288756750e0fc7ed09543574a28beee8"
+source = "git+https://github.com/hrtk91/voicevox_std_chat.git?branch=main#df949f3f288756750e0fc7ed09543574a28beee8"
 dependencies = [
  "colored",
  "dotenvy",
